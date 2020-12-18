@@ -82,12 +82,14 @@ typedef enum _PUBSUB_TYPE {
 #define REDIS_OPT_REPLY_LITERAL      8
 #define REDIS_OPT_COMPRESSION_LEVEL  9
 #define REDIS_OPT_NULL_MBULK_AS_NULL 10
+#define REDIS_OPT_PREFERRED_NODES    11
 
 /* cluster options */
 #define REDIS_FAILOVER_NONE              0
 #define REDIS_FAILOVER_ERROR             1
 #define REDIS_FAILOVER_DISTRIBUTE        2
 #define REDIS_FAILOVER_DISTRIBUTE_SLAVES 3
+#define REDIS_FAILOVER_PREFERRED         4
 /* serializers */
 typedef enum {
     REDIS_SERIALIZER_NONE,

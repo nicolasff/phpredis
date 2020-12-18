@@ -4041,6 +4041,8 @@ void redis_getoption_handler(INTERNAL_FUNCTION_PARAMETERS,
             RETURN_LONG(redis_sock->null_mbulk_as_null);
         case REDIS_OPT_FAILOVER:
             RETURN_LONG(c->failover);
+        case REDIS_OPT_PREFERRED_NODES:
+            RETURN_ARR(zend_array_dup(c->preferred_nodes));
         default:
             RETURN_FALSE;
     }
@@ -4168,12 +4170,22 @@ void redis_setoption_handler(INTERNAL_FUNCTION_PARAMETERS,
             if (val_long == REDIS_FAILOVER_NONE ||
                 val_long == REDIS_FAILOVER_ERROR ||
                 val_long == REDIS_FAILOVER_DISTRIBUTE ||
-                val_long == REDIS_FAILOVER_DISTRIBUTE_SLAVES)
+                val_long == REDIS_FAILOVER_DISTRIBUTE_SLAVES ||
+                val_long == REDIS_FAILOVER_PREFERRED)
             {
                 c->failover = val_long;
                 RETURN_TRUE;
             }
             break;
+        case REDIS_OPT_PREFERRED_NODES:
+            if (Z_TYPE_P(val) != IS_ARRAY)
+                RETURN_FALSE;
+            if (c->preferred_nodes) {
+                zend_hash_destroy(c->preferred_nodes);
+                FREE_HASHTABLE(c->preferred_nodes);
+            }
+            c->preferred_nodes = zend_array_dup(Z_ARRVAL_P(val));
+            RETURN_TRUE;
         EMPTY_SWITCH_DEFAULT_CASE()
     }
     RETURN_FALSE;
